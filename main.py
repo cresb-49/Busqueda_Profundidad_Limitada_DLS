@@ -11,7 +11,6 @@ grafo_prueba = {
     'D': {}
 }
 
-
 def dijkstra(grafo, inicio, objetivo):
     """Calcula la distancia más corta usando Dijkstra para verificar optimalidad"""
     distancias = {nodo: float('inf') for nodo in grafo}
@@ -31,7 +30,6 @@ def dijkstra(grafo, inicio, objetivo):
                 heapq.heappush(cola_prioridad, (nueva_dist, vecino))
 
     return float('inf')  # No se encontró camino
-
 
 def algoritmo_busqueda(grafo, inicio, meta, limite):
     """
@@ -85,13 +83,15 @@ def algoritmo_busqueda(grafo, inicio, meta, limite):
         "Nodos explorados": len(nodos_explorados),
         "Tiempo de ejecución (s)": round(tiempo_total, 6),
         "Memoria utilizada (bytes)": memoria_usada,
-        "Es solución óptima": es_optimo
+        "Es solución óptima": es_optimo,
+        "Distancia DLS": distancia_dls,
+        "Distancia óptima": distancia_optima
     }
 
     return (camino if encontrado else None, nodos_explorados, estadisticas)
 
 def graficar_recorrido(grafo, nodos_explorados, camino):
-    """Genera una imagen con el recorrido del algoritmo"""
+    """Genera una imagen con el recorrido del algoritmo y la guarda como PNG"""
     G = nx.DiGraph()
 
     # Agregar nodos y aristas con pesos
@@ -118,7 +118,8 @@ def graficar_recorrido(grafo, nodos_explorados, camino):
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
 
     plt.title("Recorrido de Búsqueda en Profundidad Limitada")
-    plt.show()
+    plt.savefig("recorrido_dls.png")  # Guardar imagen en archivo PNG
+    plt.close()
 
 # Entrada del usuario
 inicio = input("Ingrese el nodo inicial: ").strip().upper()
@@ -138,3 +139,4 @@ print(f"Estadísticas: {stats}")
 
 # Generar la imagen del recorrido
 graficar_recorrido(grafo_prueba, explorados, resultado)
+print("La imagen del recorrido ha sido guardada como 'recorrido_dls.png'")
