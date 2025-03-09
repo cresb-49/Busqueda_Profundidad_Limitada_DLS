@@ -91,7 +91,7 @@ def algoritmo_busqueda(grafo, inicio, meta, limite):
     return (camino if encontrado else None, nodos_explorados, estadisticas)
 
 def graficar_recorrido(grafo, nodos_explorados, camino):
-    """Genera una imagen con el recorrido del algoritmo y la guarda como PNG"""
+    """Genera una imagen con el recorrido del algoritmo y la guarda como PNG evitando que los recorridos choquen."""
     G = nx.DiGraph()
 
     # Agregar nodos y aristas con pesos
@@ -99,11 +99,11 @@ def graficar_recorrido(grafo, nodos_explorados, camino):
         for vecino, peso in vecinos.items():
             G.add_edge(nodo, vecino, weight=peso)
 
-    pos = nx.spring_layout(G)
+    pos = nx.kamada_kawai_layout(G)  # Usar un layout que minimice cruces
     
     # Dibujar todos los nodos y aristas
     plt.figure(figsize=(8, 6))
-    nx.draw(G, pos, with_labels=True, node_color="lightgray", edge_color="gray", node_size=1500, font_size=12)
+    nx.draw(G, pos, with_labels=True, node_color="lightgray", edge_color="gray", node_size=1500, font_size=12, arrows=True)
 
     # Resaltar nodos explorados
     nx.draw_networkx_nodes(G, pos, nodelist=nodos_explorados, node_color="blue", node_size=1500)
@@ -111,7 +111,7 @@ def graficar_recorrido(grafo, nodos_explorados, camino):
     # Resaltar camino final si existe
     if camino:
         edges_camino = [(camino[i], camino[i+1]) for i in range(len(camino) - 1)]
-        nx.draw_networkx_edges(G, pos, edgelist=edges_camino, edge_color="red", width=2.5)
+        nx.draw_networkx_edges(G, pos, edgelist=edges_camino, edge_color="red", width=2.5, arrows=True, arrowstyle="-|>")
         nx.draw_networkx_nodes(G, pos, nodelist=camino, node_color="red", node_size=1500)
 
     labels = {(u, v): d['weight'] for u, v, d in G.edges(data=True)}
